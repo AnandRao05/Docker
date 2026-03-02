@@ -1,3 +1,12 @@
-const add = require('./math');
+const express = require('express');
+const app = express();
 
-console.log("Sum:", add(2, 3));
+const PORT = 3000;
+
+app.get('/', (req, res) => {
+  res.send("Hello from Kubernetes 🚀");
+});
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
