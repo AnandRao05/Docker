@@ -3,6 +3,7 @@ pipeline {
 
     environment {
         DOCKER_IMAGE = "anandrao0509/myapp"
+        DOCKER_CREDENTIALS_ID = "dockerhub-creds"
     }
 
     stages {
@@ -21,7 +22,16 @@ pipeline {
 
         stage('Push Docker Image') {
             steps {
-                sh 'docker push $DOCKER_IMAGE:latest'
+                withCredentials([usernamePassword(
+                    credentialsId: 'dockerhub-creds',
+                    usernameVariable: 'DOCKER_USER',
+                    passwordVariable: 'DOCKER_PASS'
+                )]) {
+                    sh '''
+                        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $DOCKER_IMAGE:latest
+                    '''
+                }
             }
         }
 
