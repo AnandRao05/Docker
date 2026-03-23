@@ -52,10 +52,7 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                kubectl apply -f deployment.yaml
-                kubectl apply -f service.yaml
-                kubectl set image deployment/myapp myapp=$DOCKER_IMAGE:$IMAGE_TAG
-                kubectl rollout status deployment/myapp
+                kubectl apply -f k8s/
             }
         }
 
