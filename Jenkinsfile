@@ -1,8 +1,8 @@
 pipeline {
     agent any
     tools {
-    nodejs 'node18'
-}
+        nodejs 'node18'
+    }
 
     environment {
         DOCKER_IMAGE = "anandrao0509/myapp"
