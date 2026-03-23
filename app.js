@@ -1,12 +1,10 @@
 const express = require('express');
 const app = express();
 
-const PORT = 3000;
-
 app.get('/', (req, res) => {
-  res.send("Hello from Kubernetes 🚀");
+    res.send("🚀 CI/CD Pipeline Working Successfully!");
 });
 
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+app.listen(3000, () => {
+    console.log("Server running on port 3000");
 });

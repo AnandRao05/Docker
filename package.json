@@ -5,7 +5,7 @@
   "type": "commonjs",
   "scripts": {
     "start": "node app.js",
-    "test": "jest"
+    "test": "node math.test.js"
   },
   "devDependencies": {
     "jest": "^29.7.0"

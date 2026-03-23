@@ -15,6 +15,6 @@ spec:
       containers:
       - name: myapp
         image: anandrao0509/myapp:latest
-        imagePullPolicy: Never
+        imagePullPolicy: Always
         ports:
         - containerPort: 3000
