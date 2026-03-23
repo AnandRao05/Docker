@@ -1,8 +1,5 @@
 pipeline {
     agent any
-    tools {
-        nodejs 'node18'
-    }
 
     environment {
         DOCKER_IMAGE = "anandrao0509/myapp"
@@ -18,7 +15,7 @@ pipeline {
             }
         }
 
-          stage('Test') {
+        stage('Test') {
             steps {
                 sh 'npm install'
                 sh 'npm test'
