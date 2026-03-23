@@ -1,6 +1,10 @@
 pipeline {
     agent any
 
+    tools {
+    nodejs 'node18'
+    }
+
     environment {
         DOCKER_IMAGE = "anandrao0509/myapp"
         DOCKER_CREDENTIALS_ID = "dockerhub-creds"
