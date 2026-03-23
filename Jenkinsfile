@@ -4,32 +4,49 @@ pipeline {
     environment {
         DOCKER_IMAGE = "anandrao0509/myapp"
         DOCKER_CREDENTIALS_ID = "dockerhub-creds"
+        IMAGE_TAG = "${BUILD_NUMBER}"
     }
 
     stages {
 
-        stage('Checkout Code') {
+        stage('Checkout') {
             steps {
                 checkout scm
             }
         }
 
-        stage('Build Docker Image') {
+        stage('Install Dependencies') {
             steps {
-                sh 'docker build -t $DOCKER_IMAGE:latest .'
+                sh 'npm install'
             }
         }
 
-        stage('Push Docker Image') {
+        stage('Run Tests') {
+            steps {
+                sh 'npm test'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t $DOCKER_IMAGE:$IMAGE_TAG .'
+                sh 'docker tag $DOCKER_IMAGE:$IMAGE_TAG $DOCKER_IMAGE:latest'
+            }
+        }
+
+        stage('Push Image') {
             steps {
                 withCredentials([usernamePassword(
-                    credentialsId: 'dockerhub-creds',
+                    credentialsId: DOCKER_CREDENTIALS_ID,
                     usernameVariable: 'DOCKER_USER',
                     passwordVariable: 'DOCKER_PASS'
                 )]) {
+
                     sh '''
                         echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+                        docker push $DOCKER_IMAGE:$IMAGE_TAG
                         docker push $DOCKER_IMAGE:latest
+                        docker logout
                     '''
                 }
             }
@@ -37,9 +54,9 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl apply -f deployment.yaml'
-                sh 'kubectl apply -f service.yaml'
+                sh 'kubectl set image deployment/myapp myapp=$DOCKER_IMAGE:$IMAGE_TAG'
             }
         }
+
     }
 }
