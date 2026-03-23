@@ -1,5 +1,8 @@
 pipeline {
     agent any
+    tools {
+    nodejs 'node18'
+}
 
     environment {
         DOCKER_IMAGE = "anandrao0509/myapp"
@@ -15,14 +18,9 @@ pipeline {
             }
         }
 
-        stage('Install Dependencies') {
+          stage('Test') {
             steps {
                 sh 'npm install'
-            }
-        }
-
-        stage('Run Tests') {
-            steps {
                 sh 'npm test'
             }
         }
@@ -54,7 +52,10 @@ pipeline {
 
         stage('Deploy to Kubernetes') {
             steps {
-                sh 'kubectl set image deployment/myapp myapp=$DOCKER_IMAGE:$IMAGE_TAG'
+                kubectl apply -f deployment.yaml
+                kubectl apply -f service.yaml
+                kubectl set image deployment/myapp myapp=$DOCKER_IMAGE:$IMAGE_TAG
+                kubectl rollout status deployment/myapp
             }
         }
 
